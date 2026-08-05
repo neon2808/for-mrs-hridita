@@ -1,4 +1,3 @@
-/* ========================= ELEMENTS ========================= */
 const loadingScreen = document.getElementById("loadingScreen");
 const mainContainer = document.getElementById("mainContainer");
 const passwordInput = document.getElementById("passwordInput");
@@ -6,8 +5,7 @@ const passwordButton = document.getElementById("passwordButton");
 const errorText = document.getElementById("errorText");
 const passwordSection = document.getElementById("passwordSection");
 const envelopeSection = document.getElementById("envelopeSection");
-const envelope = document.getElementById("envelope");
-const openLetterBtn = document.getElementById("openLetterBtn");
+const envelopeFront = document.getElementById("envelopeFront");
 const letterSection = document.getElementById("letterSection");
 const finalSection = document.getElementById("finalSection");
 const finishJourney = document.getElementById("finishJourney");
@@ -19,52 +17,43 @@ const dayCounter = document.getElementById("dayCounter");
 
 let currentChapter = 0;
 let musicStarted = false;
-let dayCounterStarted = false;
+let dayStarted = false;
 
-/* ========================= LOADING ========================= */
+/* LOADING */
 window.addEventListener("load", () => {
-  // Try to start music early
   tryStartMusic();
-
   setTimeout(() => {
     loadingScreen.style.opacity = "0";
     setTimeout(() => {
       loadingScreen.style.display = "none";
       mainContainer.classList.remove("hidden");
     }, 700);
-  }, 2000);
+  }, 1800);
 });
 
-/* ========================= MUSIC ========================= */
+/* MUSIC */
 function tryStartMusic() {
-  if (musicStarted) return;
-  bgMusic.volume = 0.55;
-  const playPromise = bgMusic.play();
-  if (playPromise !== undefined) {
-    playPromise
-      .then(() => {
-        musicStarted = true;
-        musicBtn.textContent = "♪ Music Playing";
-      })
-      .catch(() => {
-        // Autoplay blocked — will start on first interaction
-        musicBtn.textContent = "▶ Tap for Music";
-      });
-  }
-}
-
-function forceStartMusic() {
   if (musicStarted) return;
   bgMusic.volume = 0.55;
   bgMusic.play().then(() => {
     musicStarted = true;
     musicBtn.textContent = "♪ Music Playing";
-  }).catch(() => {});
+  }).catch(() => {
+    musicBtn.textContent = "▶ Tap for Music";
+  });
 }
 
-// Start music on any first interaction
-["click", "touchstart", "keydown"].forEach(evt => {
-  document.addEventListener(evt, forceStartMusic, { once: true, passive: true });
+function forceMusic() {
+  if (musicStarted) return;
+  bgMusic.volume = 0.55;
+  bgMusic.play().then(() => {
+    musicStarted = true;
+    musicBtn.textContent = "♪ Music Playing";
+  }).catch(()=>{});
+}
+
+["click","touchstart","keydown"].forEach(evt => {
+  document.addEventListener(evt, forceMusic, {once:true, passive:true});
 });
 
 musicBtn.addEventListener("click", (e) => {
@@ -78,18 +67,16 @@ musicBtn.addEventListener("click", (e) => {
   }
 });
 
-/* ========================= PASSWORD ========================= */
+/* PASSWORD */
 passwordButton.addEventListener("click", () => {
-  const password = passwordInput.value.trim();
-  if (password === "2808") {
+  if (passwordInput.value.trim() === "2808") {
     errorText.textContent = "";
     passwordSection.classList.add("hidden");
     envelopeSection.classList.remove("hidden");
-    forceStartMusic();
+    forceMusic();
   } else {
     errorText.textContent = "That’s not our little secret ❤️";
     passwordInput.value = "";
-    passwordInput.focus();
   }
 });
 
@@ -97,69 +84,63 @@ passwordInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") passwordButton.click();
 });
 
-/* ========================= ENVELOPE ========================= */
-envelope.addEventListener("click", () => {
-  envelope.classList.add("open");
-});
-
-openLetterBtn.addEventListener("click", (e) => {
-  e.stopPropagation(); // important
+/* ENVELOPE - simple & reliable */
+envelopeFront.addEventListener("click", () => {
   envelopeSection.classList.add("hidden");
   letterSection.classList.remove("hidden");
   startDayCounter();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({top:0, behavior:"smooth"});
 });
-/* ========================= CHAPTERS ========================= */
-nextButtons.forEach((btn) => {
+
+/* CHAPTERS */
+nextButtons.forEach(btn => {
   btn.addEventListener("click", () => {
     chapters[currentChapter].classList.remove("active");
     currentChapter++;
     if (currentChapter < chapters.length) {
       chapters[currentChapter].classList.add("active");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({top:0, behavior:"smooth"});
     }
   });
 });
 
-/* ========================= FINAL ========================= */
+/* FINAL */
 finishJourney.addEventListener("click", () => {
   letterSection.classList.add("hidden");
   finalSection.classList.remove("hidden");
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({top:0, behavior:"smooth"});
 });
 
-/* ========================= DAY COUNTER ========================= */
+/* DAY COUNTER */
 function startDayCounter() {
-  if (dayCounterStarted) return;
-  dayCounterStarted = true;
-  let current = 0;
-  const target = 365;
-  const interval = setInterval(() => {
-    current++;
-    dayCounter.textContent = current;
-    if (current >= target) clearInterval(interval);
-  }, 11);
+  if (dayStarted) return;
+  dayStarted = true;
+  let n = 0;
+  const timer = setInterval(() => {
+    n++;
+    dayCounter.textContent = n;
+    if (n >= 365) clearInterval(timer);
+  }, 10);
 }
 
-/* ========================= FLOATING DECORATIONS ========================= */
+/* FLOATING */
 function createFloating(id, symbol, count) {
-  const container = document.getElementById(id);
-  if (!container) return;
+  const box = document.getElementById(id);
+  if (!box) return;
   for (let i = 0; i < count; i++) {
-    const el = document.createElement("span");
-    el.innerHTML = symbol;
-    el.style.left = Math.random() * 100 + "%";
-    el.style.top = Math.random() * 100 + "%";
-    el.style.fontSize = (11 + Math.random() * 18) + "px";
-    el.style.animationDuration = (9 + Math.random() * 11) + "s";
-    el.style.animationDelay = Math.random() * 7 + "s";
-    container.appendChild(el);
+    const s = document.createElement("span");
+    s.innerHTML = symbol;
+    s.style.left = Math.random()*100 + "%";
+    s.style.top = Math.random()*100 + "%";
+    s.style.fontSize = (12 + Math.random()*18) + "px";
+    s.style.animationDuration = (8 + Math.random()*10) + "s";
+    s.style.animationDelay = Math.random()*6 + "s";
+    box.appendChild(s);
   }
 }
-
-createFloating("hearts", "❤️", 18);
-createFloating("petals", "🌸", 16);
-createFloating("sparkles", "✨", 20);
-createFloating("butterflies", "🦋", 9);
-createFloating("nightStars", "•", 65);
-createFloating("finalHearts", "❤️", 14);
+createFloating("hearts","❤️",16);
+createFloating("petals","🌸",14);
+createFloating("sparkles","✨",18);
+createFloating("butterflies","🦋",8);
+createFloating("nightStars","•",60);
+createFloating("finalHearts","❤️",12);
