@@ -247,3 +247,62 @@ width:100%;
 }
 
 }
+/* ========= FLOATING DECORATIONS ========= */
+
+.floating-heart,
+.floating-petal,
+.sparkle{
+
+position:fixed;
+
+pointer-events:none;
+
+z-index:1;
+
+animation:floatUp linear infinite;
+
+}
+
+.floating-heart{
+
+font-size:22px;
+
+}
+
+.floating-petal{
+
+font-size:18px;
+
+}
+
+.sparkle{
+
+font-size:12px;
+
+}
+
+@keyframes floatUp{
+
+0%{
+
+transform:translateY(110vh) rotate(0deg);
+
+opacity:0;
+
+}
+
+10%{
+
+opacity:1;
+
+}
+
+100%{
+
+transform:translateY(-120vh) rotate(360deg);
+
+opacity:0;
+
+}
+
+}
