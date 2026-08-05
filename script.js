@@ -102,13 +102,13 @@ envelope.addEventListener("click", () => {
   envelope.classList.add("open");
 });
 
-openLetterBtn.addEventListener("click", () => {
+openLetterBtn.addEventListener("click", (e) => {
+  e.stopPropagation(); // important
   envelopeSection.classList.add("hidden");
   letterSection.classList.remove("hidden");
   startDayCounter();
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
-
 /* ========================= CHAPTERS ========================= */
 nextButtons.forEach((btn) => {
   btn.addEventListener("click", () => {
